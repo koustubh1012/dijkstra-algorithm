@@ -7,14 +7,15 @@ obstacle_list = []
 
 
 # cost to come, index, parent node index=0 and coordinate values (x,y)
-initial_node = (0, 1, 0, (0,0))
-goal = (5,5)
+initial_node = (0, 1, 0, (10,10))
+goal = (9,11)
 open_list = []
 hq.heappush(open_list,initial_node)
 hq.heapify(open_list)
 
 node_grid = [[float('inf')] * 500 for _ in range(1200)]
 closed_set = set()
+closed_list = []
 
 for y in range(500):
     for x in range(0,1200):
@@ -128,15 +129,119 @@ def move_down_right(node):
         c2c = node[0] + 1.4
     return (x,y),c2c
 
+new_index = 1
 while(open_list):
     node = hq.heappop(open_list)
+    closed_set.add(node[3])
+    closed_list.append(node)
+    index = node[1]
     if node[3] == goal:
         print("Goal reached")
         break
+    point, c2c = move_up_left(node)
+    if point not in obstacle_set and point not in closed_set:
+        x = point[0]
+        y = point[1]
+        c2c = round(c2c,2)
+        if c2c<node_grid[x][y]:
+            parent_index = index
+            new_index+=1
+            node_grid[x][y] = c2c
+            new_node = (c2c, new_index,parent_index,point)
+            hq.heappush(open_list, new_node)
+
+    point, c2c = move_up(node)
+    if point not in obstacle_set and point not in closed_set:
+        x = point[0]
+        y = point[1]
+        c2c = round(c2c,2)
+        if c2c<node_grid[x][y]:
+            parent_index = index
+            new_index+=1
+            node_grid[x][y] = c2c
+            new_node = (c2c, new_index,parent_index,point)
+            hq.heappush(open_list, new_node)
+
+    point, c2c = move_up_right(node)
+    if point not in obstacle_set and point not in closed_set:
+        x = point[0]
+        y = point[1]
+        c2c = round(c2c,2)
+        if c2c<node_grid[x][y]:
+            parent_index = index
+            new_index+=1
+            node_grid[x][y] = c2c
+            new_node = (c2c, new_index,parent_index,point)
+            hq.heappush(open_list, new_node)
+
+    point, c2c = move_left(node)
+    if point not in obstacle_set and point not in closed_set:
+        x = point[0]
+        y = point[1]
+        c2c = round(c2c,2)
+        if c2c<node_grid[x][y]:
+            parent_index = index
+            new_index+=1
+            node_grid[x][y] = c2c
+            new_node = (c2c, new_index,parent_index,point)
+            hq.heappush(open_list, new_node)
+
+    point, c2c = move_right(node)
+    if point not in obstacle_set and point not in closed_set:
+        x = point[0]
+        y = point[1]
+        c2c = round(c2c,2)
+        if c2c<node_grid[x][y]:
+            parent_index = index
+            new_index+=1
+            node_grid[x][y] = c2c
+            new_node = (c2c, new_index,parent_index,point)
+            hq.heappush(open_list, new_node)
 
 
-# print(node[3])
+    point, c2c = move_down_left(node)
+    if point not in obstacle_set and point not in closed_set:
+        x = point[0]
+        y = point[1]
+        c2c = round(c2c,2)
+        if c2c<node_grid[x][y]:
+            parent_index = index
+            new_index+=1
+            node_grid[x][y] = c2c
+            new_node = (c2c, new_index,parent_index,point)
+            hq.heappush(open_list, new_node)
 
+    point, c2c = move_down(node)
+    if point not in obstacle_set and point not in closed_set:
+        x = point[0]
+        y = point[1]
+        c2c = round(c2c,2)
+        if c2c<node_grid[x][y]:
+            parent_index = index
+            new_index+=1
+            node_grid[x][y] = c2c
+            new_node = (c2c, new_index,parent_index,point)
+            hq.heappush(open_list, new_node)
+
+    point, c2c = move_down_right(node)
+    if point not in obstacle_set and point not in closed_set:
+        x = point[0]
+        y = point[1]
+        c2c = round(c2c,2)
+        if c2c<node_grid[x][y]:
+            parent_index = index
+            new_index+=1
+            node_grid[x][y] = c2c
+            new_node = (c2c, new_index,parent_index,point)
+            hq.heappush(open_list, new_node)
+
+print("OPEN LIST")
+for node in open_list:
+    print(node)
+
+print("CLOSED LIST")
+for node in closed_list:
+    print(node)
 
 
 

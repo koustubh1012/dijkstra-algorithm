@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import heapq as hq
 import sys
+import time
 
 canvas = np.ones((500,1200,3))
 obstacle_set = set()
@@ -123,19 +124,20 @@ def move_down_right(node):
         c2c = node[0] + 1.4
     return (x,y),c2c
 
+
 new_index = 1
 
 # cost to come, index, parent node index=0 and coordinate values (x,y)
-start_x = int(input("Enter the Start Point X coordinate:"))
-start_y = int(input("Enter the Start Point Y coordinate:"))
+start_x = int(input("Enter the Start Point X coordinate: "))
+start_y = int(input("Enter the Start Point Y coordinate: "))
 if (start_x,start_y) in obstacle_set:
     print("Invalid Start Point")
     sys.exit()
 else:
     initial_node = (0, 1, [], (start_x,start_y))
 
-goal_x = int(input("Enter the Goal Point X coordinate:"))
-goal_y = int(input("Enter the Goal Point Y coordinate:"))
+goal_x = int(input("Enter the Goal Point X coordinate: "))
+goal_y = int(input("Enter the Goal Point Y coordinate: "))
 if (goal_x,goal_y) in obstacle_set:
     print("Invalid Goal Point")
     sys.exit()
@@ -146,6 +148,14 @@ open_list = []
 hq.heappush(open_list,initial_node)
 hq.heapify(open_list)
 
+for point in obstacle_list:
+    canvas[point[1],point[0]] = [255, 0, 0]
+
+cv2.rectangle(canvas, (100, 499), (175, 100), (0 , 0, 255), -1)
+cv2.rectangle(canvas, (275, 400), (350, 0), (0 , 0, 255), -1)
+cv2.rectangle(canvas, (900, 125), (1100, 50), (0 , 0, 255), -1)
+cv2.rectangle(canvas, (900, 450), (1100, 375), (0 , 0, 255), -1)
+cv2.rectangle(canvas, (1020, 450), (1100, 50), (0, 0, 255), -1)
 
 while(open_list):
     # cost to come, index, parent node index and coordinate values (x,y)
@@ -250,35 +260,29 @@ while(open_list):
             hq.heappush(open_list, new_node)
    
    
-print(node)
+# print(node)
 path = node[2]
+
+for node in closed_list:
+    canvas[node[3][1], node[3][0]] = [0, 255, 0]
+    canvas_flipped = cv2.flip(canvas,0)
+    cv2.imshow("MAP", canvas_flipped)
+
+    key = cv2.waitKey(1)
+    if key == ord('q'):
+    # Exit if 'q' key is pressed
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
 for index in path:
     for node in closed_list:
         if node[1] == index:
-            print(node[3])
-
-# print("OPEN LIST")
-# for node in open_list:
-#     print(node)
-
-# print("CLOSED LIST")
-# for node in closed_list:
-#     print(node)
+            canvas[node[3][1], node[3][0]] = [0,0,0]
 
 
-for point in obstacle_list:
-    canvas[point[1],point[0]] = [255, 0, 0]
+canvas_flipped = cv2.flip(canvas,0) 
 
-cv2.rectangle(canvas, (100, 499), (175, 100), (0 , 0, 255), -1)
-cv2.rectangle(canvas, (275, 400), (350, 0), (0 , 0, 255), -1)
-cv2.rectangle(canvas, (900, 125), (1100, 50), (0 , 0, 255), -1)
-cv2.rectangle(canvas, (900, 450), (1100, 375), (0 , 0, 255), -1)
-cv2.rectangle(canvas, (1020, 450), (1100, 50), (0, 0, 255), -1)
-canvas = cv2.flip(canvas,0)
-    
-
-cv2.imshow("dikjksra",canvas)
+cv2.imshow("MAP",canvas_flipped)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

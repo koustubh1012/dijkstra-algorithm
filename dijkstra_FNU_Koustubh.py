@@ -1,17 +1,11 @@
 import cv2
 import numpy as np
 import heapq as hq
+import sys
+
 canvas = np.ones((500,1200,3))
 obstacle_set = set()
 obstacle_list = []
-
-
-# cost to come, index, parent node index=0 and coordinate values (x,y)
-initial_node = (0, 1, 0, (10,10))
-goal = (9,11)
-open_list = []
-hq.heappush(open_list,initial_node)
-hq.heapify(open_list)
 
 node_grid = [[float('inf')] * 500 for _ in range(1200)]
 closed_set = set()
@@ -130,24 +124,51 @@ def move_down_right(node):
     return (x,y),c2c
 
 new_index = 1
+
+# cost to come, index, parent node index=0 and coordinate values (x,y)
+start_x = int(input("Enter the Start Point X coordinate:"))
+start_y = int(input("Enter the Start Point Y coordinate:"))
+if (start_x,start_y) in obstacle_set:
+    print("Invalid Start Point")
+    sys.exit()
+else:
+    initial_node = (0, 1, [], (start_x,start_y))
+
+goal_x = int(input("Enter the Goal Point X coordinate:"))
+goal_y = int(input("Enter the Goal Point Y coordinate:"))
+if (goal_x,goal_y) in obstacle_set:
+    print("Invalid Goal Point")
+    sys.exit()
+else:
+    goal = (goal_x, goal_y)
+
+open_list = []
+hq.heappush(open_list,initial_node)
+hq.heapify(open_list)
+
+
 while(open_list):
+    # cost to come, index, parent node index and coordinate values (x,y)
     node = hq.heappop(open_list)
     closed_set.add(node[3])
     closed_list.append(node)
     index = node[1]
+    parent_index = node[2]
     if node[3] == goal:
         print("Goal reached")
         break
+
     point, c2c = move_up_left(node)
     if point not in obstacle_set and point not in closed_set:
         x = point[0]
         y = point[1]
         c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
-            parent_index = index
+            new_parent_index = parent_index.copy()
+            new_parent_index.append(index)
             new_index+=1
             node_grid[x][y] = c2c
-            new_node = (c2c, new_index,parent_index,point)
+            new_node = (c2c, new_index, new_parent_index, point)
             hq.heappush(open_list, new_node)
 
     point, c2c = move_up(node)
@@ -156,10 +177,11 @@ while(open_list):
         y = point[1]
         c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
-            parent_index = index
+            new_parent_index = parent_index.copy()
+            new_parent_index.append(index)
             new_index+=1
             node_grid[x][y] = c2c
-            new_node = (c2c, new_index,parent_index,point)
+            new_node = (c2c, new_index, new_parent_index, point)
             hq.heappush(open_list, new_node)
 
     point, c2c = move_up_right(node)
@@ -168,10 +190,11 @@ while(open_list):
         y = point[1]
         c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
-            parent_index = index
+            new_parent_index = parent_index.copy()
+            new_parent_index.append(index)
             new_index+=1
             node_grid[x][y] = c2c
-            new_node = (c2c, new_index,parent_index,point)
+            new_node = (c2c, new_index, new_parent_index, point)
             hq.heappush(open_list, new_node)
 
     point, c2c = move_left(node)
@@ -180,10 +203,11 @@ while(open_list):
         y = point[1]
         c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
-            parent_index = index
+            new_parent_index = parent_index.copy()
+            new_parent_index.append(index)
             new_index+=1
             node_grid[x][y] = c2c
-            new_node = (c2c, new_index,parent_index,point)
+            new_node = (c2c, new_index, new_parent_index, point)
             hq.heappush(open_list, new_node)
 
     point, c2c = move_right(node)
@@ -192,12 +216,12 @@ while(open_list):
         y = point[1]
         c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
-            parent_index = index
+            new_parent_index = parent_index.copy()
+            new_parent_index.append(index)
             new_index+=1
             node_grid[x][y] = c2c
-            new_node = (c2c, new_index,parent_index,point)
+            new_node = (c2c, new_index, new_parent_index, point)
             hq.heappush(open_list, new_node)
-
 
     point, c2c = move_down_left(node)
     if point not in obstacle_set and point not in closed_set:
@@ -205,22 +229,11 @@ while(open_list):
         y = point[1]
         c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
-            parent_index = index
+            new_parent_index = parent_index.copy()
+            new_parent_index.append(index)
             new_index+=1
             node_grid[x][y] = c2c
-            new_node = (c2c, new_index,parent_index,point)
-            hq.heappush(open_list, new_node)
-
-    point, c2c = move_down(node)
-    if point not in obstacle_set and point not in closed_set:
-        x = point[0]
-        y = point[1]
-        c2c = round(c2c,2)
-        if c2c<node_grid[x][y]:
-            parent_index = index
-            new_index+=1
-            node_grid[x][y] = c2c
-            new_node = (c2c, new_index,parent_index,point)
+            new_node = (c2c, new_index, new_parent_index, point)
             hq.heappush(open_list, new_node)
 
     point, c2c = move_down_right(node)
@@ -229,55 +242,43 @@ while(open_list):
         y = point[1]
         c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
-            parent_index = index
+            new_parent_index = parent_index.copy()
+            new_parent_index.append(index)
             new_index+=1
             node_grid[x][y] = c2c
-            new_node = (c2c, new_index,parent_index,point)
+            new_node = (c2c, new_index, new_parent_index, point)
             hq.heappush(open_list, new_node)
+   
+   
+print(node)
+path = node[2]
 
-print("OPEN LIST")
-for node in open_list:
-    print(node)
+for index in path:
+    for node in closed_list:
+        if node[1] == index:
+            print(node[3])
 
-print("CLOSED LIST")
-for node in closed_list:
-    print(node)
+# print("OPEN LIST")
+# for node in open_list:
+#     print(node)
 
-
-
-
-
-
-
-
-
-
-
+# print("CLOSED LIST")
+# for node in closed_list:
+#     print(node)
 
 
+for point in obstacle_list:
+    canvas[point[1],point[0]] = [255, 0, 0]
 
-
-
-
-
-
-
-
-
-
-
-# for point in obstacle_list:
-#     canvas[point[1],point[0]] = [255, 0, 0]
-
-# cv2.rectangle(canvas, (100, 499), (175, 100), (0 , 0, 255), -1)
-# cv2.rectangle(canvas, (275, 400), (350, 0), (0 , 0, 255), -1)
-# cv2.rectangle(canvas, (900, 125), (1100, 50), (0 , 0, 255), -1)
-# cv2.rectangle(canvas, (900, 450), (1100, 375), (0 , 0, 255), -1)
-# cv2.rectangle(canvas, (1020, 450), (1100, 50), (0, 0, 255), -1)
-# canvas = cv2.flip(canvas,0)
+cv2.rectangle(canvas, (100, 499), (175, 100), (0 , 0, 255), -1)
+cv2.rectangle(canvas, (275, 400), (350, 0), (0 , 0, 255), -1)
+cv2.rectangle(canvas, (900, 125), (1100, 50), (0 , 0, 255), -1)
+cv2.rectangle(canvas, (900, 450), (1100, 375), (0 , 0, 255), -1)
+cv2.rectangle(canvas, (1020, 450), (1100, 50), (0, 0, 255), -1)
+canvas = cv2.flip(canvas,0)
     
 
-# cv2.imshow("dikjksra",canvas)
+cv2.imshow("dikjksra",canvas)
 
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+cv2.waitKey(0)
+cv2.destroyAllWindows()

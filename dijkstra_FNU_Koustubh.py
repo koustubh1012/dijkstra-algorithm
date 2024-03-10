@@ -68,73 +68,49 @@ for y in range(500):
 def move_up_left(node):
     x = node[3][0]-1
     y = node[3][1]+1
-    if node_grid[x][y] == FloatingPointError('inf'):
-        c2c = 1.4
-    else:
-        c2c = node[0] + 1.4
+    c2c = node[0] + 1.4
     return (x,y),c2c
 
 def move_up(node):
     x = node[3][0]
     y = node[3][1]+1
-    if node_grid[x][y] == FloatingPointError('inf'):
-        c2c = 1
-    else:
-        c2c = node[0] + 1
+    c2c = node[0] + 1
     return (x,y),c2c
 
 def move_up_right(node):
     x = node[3][0]+1
     y = node[3][1]+1
-    if node_grid[x][y] == FloatingPointError('inf'):
-        c2c = 1.4
-    else:
-        c2c = node[0] + 1.4
+    c2c = node[0] + 1.4
     return (x,y),c2c
 
 def move_left(node):
     x = node[3][0]-1
     y = node[3][1]
-    if node_grid[x][y] == FloatingPointError('inf'):
-        c2c = 1
-    else:
-        c2c = node[0] + 1
+    c2c = node[0] + 1
     return (x,y),c2c
 
 def move_right(node):
     x = node[3][0]+1
     y = node[3][1]
-    if node_grid[x][y] == FloatingPointError('inf'):
-        c2c = 1
-    else:
-        c2c = node[0] + 1
+    c2c = node[0] + 1
     return (x,y),c2c
 
 def move_down_left(node):
     x = node[3][0]-1
     y = node[3][1]-1
-    if node_grid[x][y] == FloatingPointError('inf'):
-        c2c = 1.4
-    else:
-        c2c = node[0] + 1.4
+    c2c = node[0] + 1.4
     return (x,y),c2c
 
 def move_down(node):
     x = node[3][0]
     y = node[3][1]-1
-    if node_grid[x][y] == FloatingPointError('inf'):
-        c2c = 1
-    else:
-        c2c = node[0] + 1
+    c2c = node[0] + 1
     return (x,y),c2c
 
 def move_down_right(node):
     x = node[3][0]+1
     y = node[3][1]-1
-    if node_grid[x][y] == FloatingPointError('inf'):
-        c2c = 1.4
-    else:
-        c2c = node[0] + 1.4
+    c2c = node[0] + 1.4
     return (x,y),c2c
 
 
@@ -190,7 +166,7 @@ while(open_list):
     if point not in obstacle_set and point not in closed_set:
         x = point[0]
         y = point[1]
-        c2c = round(c2c,2)
+        # c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
             new_parent_index = parent_index.copy()
             new_parent_index.append(index)
@@ -203,7 +179,7 @@ while(open_list):
     if point not in obstacle_set and point not in closed_set:
         x = point[0]
         y = point[1]
-        c2c = round(c2c,2)
+        # c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
             new_parent_index = parent_index.copy()
             new_parent_index.append(index)
@@ -216,7 +192,7 @@ while(open_list):
     if point not in obstacle_set and point not in closed_set:
         x = point[0]
         y = point[1]
-        c2c = round(c2c,2)
+        # c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
             new_parent_index = parent_index.copy()
             new_parent_index.append(index)
@@ -229,7 +205,7 @@ while(open_list):
     if point not in obstacle_set and point not in closed_set:
         x = point[0]
         y = point[1]
-        c2c = round(c2c,2)
+        # c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
             new_parent_index = parent_index.copy()
             new_parent_index.append(index)
@@ -242,7 +218,7 @@ while(open_list):
     if point not in obstacle_set and point not in closed_set:
         x = point[0]
         y = point[1]
-        c2c = round(c2c,2)
+        # c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
             new_parent_index = parent_index.copy()
             new_parent_index.append(index)
@@ -255,7 +231,7 @@ while(open_list):
     if point not in obstacle_set and point not in closed_set:
         x = point[0]
         y = point[1]
-        c2c = round(c2c,2)
+        # c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
             new_parent_index = parent_index.copy()
             new_parent_index.append(index)
@@ -268,7 +244,7 @@ while(open_list):
     if point not in obstacle_set and point not in closed_set:
         x = point[0]
         y = point[1]
-        c2c = round(c2c,2)
+        # c2c = round(c2c,2)
         if c2c<node_grid[x][y]:
             new_parent_index = parent_index.copy()
             new_parent_index.append(index)
@@ -278,7 +254,7 @@ while(open_list):
             hq.heappush(open_list, new_node)
    
    
-print("c2c:", node[0])
+print("Processing Video...")
 path = node[2]
 
 counter = 0
@@ -311,13 +287,15 @@ for index in path:
             canvas_flipped = cv2.flip(canvas,0)
             canvas_flipped_uint8 = cv2.convertScaleAbs(canvas_flipped)
 
-for i in range(300):
+for i in range(150):
     video_writer.write(canvas_flipped_uint8)
     
 # cv2.imshow("project2",canvas_flipped)
 # if cv2.waitKey(1) & 0xFF == ord('q'):
 #     break
 
+print("Video Processed")
 
-cv2.destroyAllWindows()
+
+# cv2.destroyAllWindows()
 video_writer.release()

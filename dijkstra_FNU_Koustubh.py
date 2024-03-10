@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import heapq as hq
 import sys
-import time
 
 canvas = np.ones((500,1200,3))
 obstacle_set = set()
@@ -48,6 +47,19 @@ for y in range(500):
             obstacle_list.append((x,y))
             node_grid[x][y] = -1
         elif (895<=x<=1020 and 370<=y<=455):
+            obstacle_set.add((x,y))
+            obstacle_list.append((x,y))
+            node_grid[x][y] = -1
+
+        elif(515<=x<=785) and (170<=y<=330):
+            obstacle_set.add((x,y))
+            obstacle_list.append((x,y))
+            node_grid[x][y] = -1
+        elif(330<=y<=405) and (-75*x+135*y-5925<=0) and (-75*x-135*y+103425>=0):
+            obstacle_set.add((x,y))
+            obstacle_list.append((x,y))
+            node_grid[x][y] = -1
+        elif(95<=y<=170) and (-75*x-135*y+61575<=0) and (-75*x+135*y+35925>=0):
             obstacle_set.add((x,y))
             obstacle_list.append((x,y))
             node_grid[x][y] = -1
@@ -157,6 +169,11 @@ cv2.rectangle(canvas, (275, 400), (350, 0), (0 , 0, 255), -1)
 cv2.rectangle(canvas, (900, 125), (1100, 50), (0 , 0, 255), -1)
 cv2.rectangle(canvas, (900, 450), (1100, 375), (0 , 0, 255), -1)
 cv2.rectangle(canvas, (1020, 450), (1100, 50), (0, 0, 255), -1)
+pts = np.array([[650, 400], [780, 325], 
+                [780, 175], [650, 100], 
+                [520, 175], [520, 325]],
+                np.int32)
+canvas = cv2.fillPoly(canvas, [np.array(pts)], color=(0, 0, 255))
 
 while(open_list):
     # cost to come, index, parent node index and coordinate values (x,y)
@@ -261,38 +278,45 @@ while(open_list):
             hq.heappush(open_list, new_node)
    
    
-# print(node)
+print("c2c:", node[0])
 path = node[2]
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec for MP4 format (lowercase 'v' is crucial)
-video_writer = cv2.VideoWriter('output.mp4', fourcc, 60, (1200, 500))
 
 counter = 0
+
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec for MP4 format (lowercase 'v' is crucial)
+video_writer = cv2.VideoWriter('output.mp4', fourcc, 30, (1200, 500))
 
 for node in closed_list:
     canvas[node[3][1], node[3][0]] = [0, 255, 0]
     canvas_flipped = cv2.flip(canvas,0)
     counter +=1
-    if counter%1000 == 0:
+    if counter%500 == 0 or counter == 0:
         canvas_flipped_uint8 = cv2.convertScaleAbs(canvas_flipped)
         video_writer.write(canvas_flipped_uint8)
+        
 
-
-    # key = cv2.waitKey(1)
-    # if key == ord('q'):
-    # Exit if 'q' key is pressed
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-        # break
+# for node in closed_list:
+#     canvas[node[3][1], node[3][0]] = [0, 255, 0]
+#     canvas_flipped = cv2.flip(canvas,0)
+#     counter +=1
+#     if counter%1000 == 0:
+#         cv2.imshow("project2",canvas_flipped)
+#         if cv2.waitKey(1) & 0xFF == ord('q'):
+#             break
 
 for index in path:
     for node in closed_list:
         if node[1] == index:
             canvas[node[3][1], node[3][0]] = [0,0,0]
+            canvas_flipped = cv2.flip(canvas,0)
+            canvas_flipped_uint8 = cv2.convertScaleAbs(canvas_flipped)
 
-
-canvas_flipped = cv2.flip(canvas,0)
-canvas_flipped_uint8 = cv2.convertScaleAbs(canvas_flipped)
 for i in range(300):
     video_writer.write(canvas_flipped_uint8)
+    
+# cv2.imshow("project2",canvas_flipped)
+# if cv2.waitKey(1) & 0xFF == ord('q'):
+#     break
 
 
 cv2.destroyAllWindows()

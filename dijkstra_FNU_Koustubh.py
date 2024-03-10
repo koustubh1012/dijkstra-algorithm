@@ -144,7 +144,7 @@ while (not valid_start):
 
 # Get goal point from the user
 valid_goal = False
-while(not valid_start):
+while(not valid_goal):
     goal_x = int(input("Enter the Goal Point X coordinate: "))
     goal_y = int(input("Enter the Goal Point Y coordinate: "))
     if (goal_x,goal_y) in obstacle_set:
@@ -287,7 +287,7 @@ for node in closed_list:
     canvas[node[3][1], node[3][0]] = [0, 255, 0]
     canvas_flipped = cv2.flip(canvas,0)
     counter +=1
-    if counter%500 == 0 or counter == 0:
+    if counter%750 == 0 or counter == 0:
         canvas_flipped_uint8 = cv2.convertScaleAbs(canvas_flipped)
         video_writer.write(canvas_flipped_uint8)
 

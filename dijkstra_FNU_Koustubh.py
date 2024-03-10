@@ -13,7 +13,8 @@ closed_set = set()
 closed_list = []
 
 for y in range(500):
-    for x in range(0,1200):
+    for x in range(1200):
+        canvas[y,x] = [255,255,255]
         if (0<=y<=5):
             obstacle_set.add((x,y))
             obstacle_list.append((x,y))
@@ -262,17 +263,25 @@ while(open_list):
    
 # print(node)
 path = node[2]
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec for MP4 format (lowercase 'v' is crucial)
+video_writer = cv2.VideoWriter('output.mp4', fourcc, 60, (1200, 500))
+
+counter = 0
 
 for node in closed_list:
     canvas[node[3][1], node[3][0]] = [0, 255, 0]
     canvas_flipped = cv2.flip(canvas,0)
-    cv2.imshow("MAP", canvas_flipped)
+    counter +=1
+    if counter%1000 == 0:
+        canvas_flipped_uint8 = cv2.convertScaleAbs(canvas_flipped)
+        video_writer.write(canvas_flipped_uint8)
 
-    key = cv2.waitKey(1)
-    if key == ord('q'):
+
+    # key = cv2.waitKey(1)
+    # if key == ord('q'):
     # Exit if 'q' key is pressed
     # if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        # break
 
 for index in path:
     for node in closed_list:
@@ -280,9 +289,11 @@ for index in path:
             canvas[node[3][1], node[3][0]] = [0,0,0]
 
 
-canvas_flipped = cv2.flip(canvas,0) 
+canvas_flipped = cv2.flip(canvas,0)
+canvas_flipped_uint8 = cv2.convertScaleAbs(canvas_flipped)
+for i in range(300):
+    video_writer.write(canvas_flipped_uint8)
 
-cv2.imshow("MAP",canvas_flipped)
 
-cv2.waitKey(0)
 cv2.destroyAllWindows()
+video_writer.release()

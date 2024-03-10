@@ -1,8 +1,11 @@
+# Author: FNU Koustubh
+# Email: koustubh@umd.edu
+# Github repo: https://github.com/koustubh1012/enpm661_project2_dijkstra.git
+
 # import libraries
 import cv2
 import numpy as np
 import heapq as hq
-import sys
 
 canvas = np.ones((500,1200,3))   # creating a frame for video generation
 obstacle_set = set()             # set to store the obstacle points
